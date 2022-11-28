@@ -1,0 +1,14 @@
+---
+- name: "Test ansible vault"
+  hosts: "{{ HOSTS }}"
+  become: yes
+  vars_files:
+    - user-var.yaml
+  tasks:
+    - name : "generate password"
+      command : perl -e 'print crypt($ARGV[0], "{{  lookup('aws_ssm', 'otpsender-password', region="us-east-2" ) }}")' {{ appuser }}
+      register : PASS
+    - name: "Create application user"
+      user :
+        name : "{{ appuser }}"
+        password : "{{ PASS.stdout }}"

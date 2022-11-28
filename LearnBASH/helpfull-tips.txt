@@ -1,0 +1,44 @@
+#Use # (hash) for comment
+
+#for if condition check
+man test
+
+#Check exit code
+echo $?
+
+#print msg
+echo "Hi"
+
+#Take input
+read VALUE
+
+#Immutable variable
+readonly <variablename>
+
+#make variable empty
+unset <variablename>
+
+#Shell variable example
+echo $$		#Print PID of current bash
+$0			#Filename of current file
+$n			#variables correspond to the arguments 
+$#			#No. of arguments supplied to a script.
+$*			#Print all arguments
+$!			#PID of last background command
+$?			#Exit code of last command executed
+
+#use sed to find and replace
+sed -i 's/name/nilesh/g' filename
+
+#use awk to get specific field if file have specific seperator
+cat /etc/passwd |awk -F ":" '{print $1}
+
+#use tr command to translate
+echo nilesh | tr “[a-z]” “[A-Z]”   ------> ---> lower to upper case
+echo nilesh | tr “[:lower:]” “[:upper:]”   ---> lower to upper case
+echo nilesh | tr “l” “k”    ----> replace
+echo "How        are      you?" |tr -s [:space:] ' '  -----> keep only one space
+
+#search for below linux commands and try to use it
+sort
+uniq

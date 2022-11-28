@@ -1,0 +1,17 @@
+---
+- name: "Install and configure webserver"
+  hosts: "{{ HOSTS }}"
+  become: yes
+  tasks:
+    - name: Install apache webserver for Debian system
+      apt:
+        name: apache2
+        state: latest
+        update_cache: yes
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Install apache webserver for Amazon system
+      yum:
+        name: httpd
+        state: latest
+      when: ansible_facts['os_family'] == "RedHat"

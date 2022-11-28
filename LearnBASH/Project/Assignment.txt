@@ -1,0 +1,10 @@
+Create shell script to take backup of any server which will do :
+1) accept ip/dns name of the server
+2) will look for the file at specific location with the format <ip>_backup.conf or <dns>_backup.conf
+3) in this conf file, file path and directory path will be mentioned which need to backup by script.
+4) script will create a backup file with format as <ip>_DDMMYYYY_HH_MM.tar 
+5) on backup server this file get saved at specific location i.e.
+  /data
+    YYYY
+      MM
+        <ip>_DDMMYYYY_HH_MM.tar

@@ -1,0 +1,100 @@
+---
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "VPC Creation with Public and Private subnet"
+        Parameters:
+          - VPCNAME
+          - VPCCIDR
+          - PUBSUBCIDR
+Parameters:
+  VPCNAME:
+    Description: "Enter your VPC name"
+    Type: String
+  VPCCIDR:
+    Description: "Enter VPC CIDR"
+    Type: String
+  PUBSUBCIDR:
+    Description: "Enter CIDR for public subnet"
+    Type: String
+  
+Resources:
+  DEVVPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: !Ref "VPCCIDR"
+      EnableDnsHostnames: "True"
+      EnableDnsSupport: "True"
+      Tags: 
+        - Key: "Name"
+          Value: !Ref "VPCNAME"
+  DEVIG:
+    Type: AWS::EC2::InternetGateway
+    Properties: 
+      Tags: 
+        - Key: "Name"
+          Value: !Join [ "-", [ !Ref "VPCNAME", IG ] ]
+  IGAttach:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      InternetGatewayId: !Ref "DEVIG"
+      VpcId: !Ref "DEVVPC"
+  PubSub1:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      CidrBlock: !Ref "PUBSUBCIDR"
+      MapPublicIpOnLaunch: "True"
+      Tags: 
+        - Key: "Name"
+          Value: "PubSub1"
+      VpcId: !Ref "DEVVPC"
+  PubRT:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+        - Key: "Name"
+          Value: "PubRT"
+      VpcId: !Ref "DEVVPC"
+  PubSubRTassoc:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref PubRT
+      SubnetId: !Ref PubSub1
+  DefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: "IGAttach"
+    Properties: 
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref "DEVIG"
+      RouteTableId: !Ref "PubRT"
+  PubSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: "SG for Public Subnet"
+      GroupName: "PubSG"
+      SecurityGroupIngress: 
+        - CidrIp: "0.0.0.0/0"
+          Description: "Allow ssh to all"
+          FromPort: 22
+          IpProtocol: "tcp"
+          ToPort: 22
+        - CidrIp: "0.0.0.0/0"
+          Description: "Allow http to all"
+          FromPort: 80
+          IpProtocol: "tcp"
+          ToPort: 80
+        - CidrIp: "0.0.0.0/0"
+          Description: "Allow tomcat to all"
+          FromPort: 8080
+          IpProtocol: "tcp"
+          ToPort: 8080
+        - CidrIp: "0.0.0.0/0"
+          Description: "Allow application to all"
+          FromPort: 5000
+          IpProtocol: "tcp"
+          ToPort: 5000                    
+      Tags: 
+        - Key: "Name"
+          Value: "PubSG"
+      VpcId: !Ref "DEVVPC"

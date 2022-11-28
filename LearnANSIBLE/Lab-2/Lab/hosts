@@ -1,0 +1,5 @@
+#This is ini format
+#Default group - all and ungrouped
+
+#[GROUPNAME]
+#ALIAS	ansible_host=IPADDRESS ansible_user=USERNAME

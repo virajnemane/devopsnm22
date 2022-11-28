@@ -1,0 +1,4 @@
+- hosts: "{{ HOSTS }}"
+  tasks:
+    - debug:
+        var: ansible_facts["all_ipv4_addresses"]
